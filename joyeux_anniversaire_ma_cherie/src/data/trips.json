@@ -1,0 +1,37 @@
+{
+  "trips": [
+    {
+      "id": 1,
+      "destination": "Venise",
+      "departure": "Lyon",
+      "departureDate": "15 Mars 2025",
+      "returnDate": "18 Mars 2025",
+      "duration": "3 jours",
+      "image": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800",
+      "description": "Week-end romantique en Italie",
+      "highlights": ["Gondole", "Place Saint-Marc", "Palais des Doges"]
+    },
+    {
+      "id": 2,
+      "destination": "Amsterdam",
+      "departure": "Lyon",
+      "departureDate": "22 Mars 2025",
+      "returnDate": "24 Mars 2025",
+      "duration": "2 jours",
+      "image": "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800",
+      "description": "Escapade aux Pays-Bas",
+      "highlights": ["Canaux", "Musée Van Gogh", "Quartier Jordaan"]
+    },
+    {
+      "id": 3,
+      "destination": "Barcelone",
+      "departure": "Lyon",
+      "departureDate": "5 Avril 2025",
+      "returnDate": "8 Avril 2025",
+      "duration": "3 jours",
+      "image": "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800",
+      "description": "Soleil et architecture catalane",
+      "highlights": ["Sagrada Familia", "Park Güell", "Plage de Barceloneta"]
+    }
+  ]
+}
