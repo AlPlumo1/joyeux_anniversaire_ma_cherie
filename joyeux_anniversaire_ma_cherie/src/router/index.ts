@@ -16,6 +16,16 @@ const router = createRouter({
       component: Confirmation
     }
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // Si l'utilisateur utilise le bouton "retour" du navigateur, garde sa position
+    if (savedPosition) {
+      return savedPosition
+    }
+    // Sinon, scroll tout en haut
+    return { top: 0, behavior: 'smooth' }
+  }
 })
+
+
 
 export default router

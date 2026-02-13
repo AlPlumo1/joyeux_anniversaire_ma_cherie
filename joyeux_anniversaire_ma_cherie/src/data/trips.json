@@ -32,6 +32,17 @@
       "image": "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800",
       "description": "Soleil et architecture catalane",
       "highlights": ["Sagrada Familia", "Park Güell", "Plage de Barceloneta"]
+    },
+     {
+      "id": 4,
+      "destination": "Lubjana",
+      "departure": "Lyon",
+      "departureDate": "5 Avril 2025",
+      "returnDate": "8 Avril 2025",
+      "duration": "3 jours",
+      "image": "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800",
+      "description": "Slovenie",
+      "highlights": ["Sagrada Familia", "Park Güell", "Plage de Barceloneta"]
     }
   ]
 }

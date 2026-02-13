@@ -8,9 +8,21 @@
 import { RouterView } from 'vue-router'
 </script>
 
-<style scoped>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Empêche le scroll horizontal */
+}
+
 #app {
-  min-height: 100vh;
-  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
 }
 </style>
