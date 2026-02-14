@@ -1,48 +1,164 @@
 {
   "trips": [
-    {
-      "id": 1,
-      "destination": "Venise",
-      "departure": "Lyon",
-      "departureDate": "15 Mars 2025",
-      "returnDate": "18 Mars 2025",
-      "duration": "3 jours",
-      "image": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800",
-      "description": "Week-end romantique en Italie",
-      "highlights": ["Gondole", "Place Saint-Marc", "Palais des Doges"]
-    },
-    {
-      "id": 2,
-      "destination": "Amsterdam",
-      "departure": "Lyon",
-      "departureDate": "22 Mars 2025",
-      "returnDate": "24 Mars 2025",
-      "duration": "2 jours",
-      "image": "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800",
-      "description": "Escapade aux Pays-Bas",
-      "highlights": ["Canaux", "Musée Van Gogh", "Quartier Jordaan"]
-    },
-    {
-      "id": 3,
-      "destination": "Barcelone",
-      "departure": "Lyon",
-      "departureDate": "5 Avril 2025",
-      "returnDate": "8 Avril 2025",
-      "duration": "3 jours",
-      "image": "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800",
-      "description": "Soleil et architecture catalane",
-      "highlights": ["Sagrada Familia", "Park Güell", "Plage de Barceloneta"]
-    },
-     {
-      "id": 4,
-      "destination": "Lubjana",
-      "departure": "Lyon",
-      "departureDate": "5 Avril 2025",
-      "returnDate": "8 Avril 2025",
-      "duration": "3 jours",
-      "image": "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800",
-      "description": "Slovenie",
-      "highlights": ["Sagrada Familia", "Park Güell", "Plage de Barceloneta"]
-    }
+  {
+    "id": 1,
+    "destination": "Florence",
+    "departure": "Lyon",
+    "departureDate": "15 Mars 2025",
+    "returnDate": "18 Mars 2025",
+    "duration": "3 jours",
+    "steps": [
+      {
+        "order": 1,
+        "city": "Zurich",
+        "images": [
+          "https://images.unsplash.com/photo-1565008576549-57569a49162d?w=800",
+          "https://images.unsplash.com/photo-1559564044-76b52e0dc5b3?w=800"
+        ]
+      },
+      {
+        "order": 2,
+        "city": "Innsbruck",
+        "images": [
+          "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800",
+          "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
+        ]
+      },
+      {
+        "order": 3,
+        "city": "Vienna",
+        "images": [
+          "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800",
+          "https://images.unsplash.com/photo-1609856878074-cf31e21ccb4b?w=800"
+        ]
+      }
+    ],
+    "destinationImages": [
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800",
+      "https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?w=800"
+    ],
+    "description": "Balade en Europe",
+    "highlights": ["Les Alpes", "Florence", "Slovénie"]
+  },
+  {
+    "id": 2,
+    "destination": "Copenhague",
+    "departure": "Lyon",
+    "departureDate": "15 Mars 2025",
+    "returnDate": "18 Mars 2025",
+    "duration": "3 jours",
+    "steps": [
+      {
+        "order": 1,
+        "city": "Zurich",
+        "images": [
+          "https://images.unsplash.com/photo-1565008576549-57569a49162d?w=800",
+          "https://images.unsplash.com/photo-1559564044-76b52e0dc5b3?w=800"
+        ]
+      },
+      {
+        "order": 2,
+        "city": "Innsbruck",
+        "images": [
+          "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800",
+          "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
+        ]
+      },
+      {
+        "order": 3,
+        "city": "Vienna",
+        "images": [
+          "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800",
+          "https://images.unsplash.com/photo-1609856878074-cf31e21ccb4b?w=800"
+        ]
+      }
+    ],
+    "destinationImages": [
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800",
+      "https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?w=800"
+    ],
+    "description": "Balade en Europe",
+    "highlights": ["Les Alpes", "Florence", "Slovénie"]
+  },
+  {
+    "id": 3,
+    "destination": "Faro",
+    "departure": "Lyon",
+    "departureDate": "15 Mars 2025",
+    "returnDate": "18 Mars 2025",
+    "duration": "3 jours",
+    "steps": [
+      {
+        "order": 1,
+        "city": "Zurich",
+        "images": [
+          "https://images.unsplash.com/photo-1565008576549-57569a49162d?w=800",
+          "https://images.unsplash.com/photo-1559564044-76b52e0dc5b3?w=800"
+        ]
+      },
+      {
+        "order": 2,
+        "city": "Innsbruck",
+        "images": [
+          "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800",
+          "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
+        ]
+      },
+      {
+        "order": 3,
+        "city": "Vienna",
+        "images": [
+          "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800",
+          "https://images.unsplash.com/photo-1609856878074-cf31e21ccb4b?w=800"
+        ]
+      }
+    ],
+    "destinationImages": [
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800",
+      "https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?w=800"
+    ],
+    "description": "Balade en Europe",
+    "highlights": ["Les Alpes", "Florence", "Slovénie"]
+  },
+  {
+    "id": 4,
+    "destination": "Varsovie",
+    "departure": "Lyon",
+    "departureDate": "15 Mars 2025",
+    "returnDate": "18 Mars 2025",
+    "duration": "3 jours",
+    "steps": [
+      {
+        "order": 1,
+        "city": "Zurich",
+        "images": [
+          "https://images.unsplash.com/photo-1565008576549-57569a49162d?w=800",
+          "https://images.unsplash.com/photo-1559564044-76b52e0dc5b3?w=800"
+        ]
+      },
+      {
+        "order": 2,
+        "city": "Innsbruck",
+        "images": [
+          "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800",
+          "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
+        ]
+      },
+      {
+        "order": 3,
+        "city": "Vienna",
+        "images": [
+          "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800",
+          "https://images.unsplash.com/photo-1609856878074-cf31e21ccb4b?w=800"
+        ]
+      }
+    ],
+    "destinationImages": [
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800",
+      "https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?w=800"
+    ],
+    "description": "Balade en Europe",
+    "highlights": ["Les Alpes", "Florence", "Slovénie"]
+  }
   ]
 }

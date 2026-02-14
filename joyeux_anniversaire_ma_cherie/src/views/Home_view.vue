@@ -1,32 +1,27 @@
+<!-- Dans TripCard.vue -->
 <template>
-  <div class="home">
-    <header class="header">
-      <h1 class="header-title">Réserve ton voyage de rêve dès maintenant</h1>
-      <p class="subtitle">Choisis la destination où tu veux aller ! </p>
-    </header>
-
-    <!-- Section destinations -->
-    <div class="destinations-section">
-      <h2 class="section-title">Toutes les destinations proposées pour votre cadeau</h2>
-      
-      <!-- Grid des cartes -->
-      <div class="trips-grid">
-        <TripCard 
-          v-for="trip in trips" 
-          :key="trip.id" 
-          :trip="trip" 
-        />
-      </div>
+  <div class="trip-card" @click="selectTrip">
+    <div class="image-container">
+      <!-- 👇 Changé ici -->
+      <img :src="trip.destinationImages[0]" :alt="trip.destination" class="trip-image" />
+    </div>
+    
+    <div class="trip-info">
+      <h3 class="destination">{{ trip.destination }}</h3>
+      <p class="region">{{ trip.description }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import TripCard from '../components/TripCard.vue'
-import tripsData from '../data/trips.json'
+import { useRouter } from 'vue-router'
 
-// Type pour un voyage
+interface TripStep {
+  order: number
+  city: string
+  images: string[]
+}
+
 interface Trip {
   id: number
   destination: string
@@ -34,16 +29,24 @@ interface Trip {
   departureDate: string
   returnDate: string
   duration: string
-  image: string
+  destinationImages: string[]  // 👈 Changé
   description: string
   highlights: string[]
+  steps: TripStep[]  // 👈 Ajouté
 }
 
-// Import des voyages depuis le JSON
-const trips = ref<Trip[]>(tripsData.trips)
+const props = defineProps<{
+  trip: Trip
+}>()
+
+const router = useRouter()
+
+const selectTrip = () => {
+  router.push(`/trip/${props.trip.id}`)
+}
 </script>
 
-
+<!-- Le reste du style reste pareil -->
 <style scoped>
 .home {
   min-height: 100vh;

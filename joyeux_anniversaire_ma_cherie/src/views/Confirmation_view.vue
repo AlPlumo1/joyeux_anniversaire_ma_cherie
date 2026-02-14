@@ -5,6 +5,7 @@
     <button class="back-button" @click="goBack">
       ← Voir les autres destinations
     </button>
+    
     <!-- Section 1: Hero mystérieux -->
     <section class="hero-section" ref="heroSection">
       <div class="hero-content">
@@ -31,7 +32,7 @@
     <section class="destination-reveal" ref="destinationSection">
       <div class="reveal-content fade-in">
         <h2 class="destination-name">{{ trip?.destination }}</h2>
-        <img :src="trip?.image" :alt="trip?.destination" class="destination-image" />
+        <img :src="trip?.destinationImages?.[0]" :alt="trip?.destination" class="destination-image" />
         <p class="destination-description">{{ trip?.description }}</p>
       </div>
     </section>
@@ -64,6 +65,60 @@
             <div class="detail-info">
               <h4>Durée</h4>
               <p>{{ trip?.duration }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3.5: Étapes du voyage -->
+    <section class="steps-section" ref="stepsSection" v-if="trip?.steps && trip.steps.length > 0">
+      <div class="steps-container fade-in">
+        <h3 class="section-title">Votre itinéraire</h3>
+        
+        <div class="steps-grid">
+          <div 
+            v-for="step in trip.steps" 
+            :key="step.order"
+            class="step-column"
+          >
+            <h4 class="step-city">{{ step.city }}</h4>
+            
+            <div class="image-carousel">
+              <button 
+                class="carousel-btn prev" 
+                @click="prevImage(step.order, step.images.length)"
+                v-if="step.images.length > 1"
+              >
+                ‹
+              </button>
+              
+              <div class="carousel-image-container">
+                <img 
+                  :src="step.images[currentImageIndexes[step.order] || 0]" 
+                  :alt="step.city"
+                  class="carousel-image"
+                />
+              </div>
+              
+              <button 
+                class="carousel-btn next" 
+                @click="nextImage(step.order, step.images.length)"
+                v-if="step.images.length > 1"
+              >
+                ›
+              </button>
+            </div>
+            
+            <!-- Indicateurs de pagination -->
+            <div class="carousel-dots" v-if="step.images.length > 1">
+              <span 
+                v-for="(img, index) in step.images" 
+                :key="index"
+                class="dot"
+                :class="{ active: (currentImageIndexes[step.order] || 0) === index }"
+                @click="currentImageIndexes[step.order] = index"
+              ></span>
             </div>
           </div>
         </div>
@@ -106,9 +161,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import tripsData from '../data/trips.json'
+
+interface TripStep {
+  order: number
+  city: string
+  images: string[]
+}
 
 interface Trip {
   id: number
@@ -117,50 +178,46 @@ interface Trip {
   departureDate: string
   returnDate: string
   duration: string
-  image: string
+  image?: string
+  destinationImages: string[]
   description: string
   highlights: string[]
+  steps: TripStep[]
 }
 
 const route = useRoute()
 const router = useRouter()
 const trip = ref<Trip | null>(null)
-  
-
 
 // Refs pour les sections
 const heroSection = ref<HTMLElement | null>(null)
 const destinationSection = ref<HTMLElement | null>(null)
 const detailsSection = ref<HTMLElement | null>(null)
+const stepsSection = ref<HTMLElement | null>(null)
 const highlightsSection = ref<HTMLElement | null>(null)
 const surpriseSection = ref<HTMLElement | null>(null)
+
 const isReady = ref(false)
+const currentImageIndexes = ref<{ [key: number]: number }>({})
 
 const goBack = () => {
   router.push('/')
 }
 
-onMounted(() => {
-  const tripId = parseInt(route.params.id as string)
-  trip.value = tripsData.trips.find(t => t.id === tripId) || null
+const scrollToDestination = () => {
+  destinationSection.value?.scrollIntoView({ behavior: 'smooth' })
+}
 
-  // Observer pour les animations au scroll
-  setupScrollAnimations()
-  
-  // 👇 Timer de 5 secondes
-  setTimeout(() => {
-    isReady.value = true
-  }, 5000)
-})
+// Fonctions pour naviguer dans les images
+const nextImage = (stepOrder: number, maxImages: number) => {
+  const current = currentImageIndexes.value[stepOrder] ?? 0
+  currentImageIndexes.value[stepOrder] = (current + 1) % maxImages
+}
 
-// Récupérer le voyage
-onMounted(() => {
-  const tripId = parseInt(route.params.id as string)
-  trip.value = tripsData.trips.find(t => t.id === tripId) || null
-
-  // Observer pour les animations au scroll
-  setupScrollAnimations()
-})
+const prevImage = (stepOrder: number, maxImages: number) => {
+  const current = currentImageIndexes.value[stepOrder] ?? 0
+  currentImageIndexes.value[stepOrder] = (current - 1 + maxImages) % maxImages
+}
 
 // Intersection Observer pour animations
 const setupScrollAnimations = () => {
@@ -181,6 +238,7 @@ const setupScrollAnimations = () => {
   const sections = [
     destinationSection.value,
     detailsSection.value,
+    stepsSection.value,
     highlightsSection.value,
     surpriseSection.value
   ]
@@ -190,10 +248,30 @@ const setupScrollAnimations = () => {
   })
 }
 
-// Fonction pour télécharger le billet (à implémenter plus tard)
+// Fonction pour télécharger le billet
 const downloadTicket = () => {
   alert('Téléchargement du billet... (à venir !)')
 }
+
+// Au montage du composant
+onMounted(() => {
+  const tripId = parseInt(route.params.id as string)
+  trip.value = tripsData.trips.find(t => t.id === tripId) || null
+
+  // Initialiser les index d'images pour chaque étape
+  if (trip.value?.steps) {
+    trip.value.steps.forEach(step => {
+      currentImageIndexes.value[step.order] = 0
+    })
+  }
+
+  setupScrollAnimations()
+  
+  // Timer de 5 secondes
+  setTimeout(() => {
+    isReady.value = true
+  }, 5000)
+})
 </script>
 
 <style scoped>
@@ -228,18 +306,24 @@ const downloadTicket = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0073ae 0%, #8de8fe 100%);
   color: white;
+  position: relative;
 }
 
 .hero-content {
   text-align: center;
+  width: 100%;
+}
+
+.initial-content,
+.ready-content {
+  animation: fadeInUp 0.8s ease;
 }
 
 .hero-title {
   font-size: 2.5rem;
   margin-bottom: 2rem;
-  animation: fadeInUp 1s ease;
 }
 
 .loading-animation {
@@ -268,6 +352,37 @@ const downloadTicket = () => {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.scroll-hint {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  opacity: 0.9;
+}
+
+.arrow-down {
+  margin-top: 3rem;
+}
+
+.arrow {
+  font-size: 4rem;
+  display: inline-block;
+  animation: bounceArrow 2s ease infinite;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.arrow:hover {
+  transform: scale(1.2);
+}
+
+@keyframes bounceArrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
   }
 }
 
@@ -361,6 +476,121 @@ const downloadTicket = () => {
   color: #666;
 }
 
+/* Section 3.5: Étapes du voyage */
+.steps-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.steps-container {
+  max-width: 1200px;
+  width: 100%;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.step-column {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.step-city {
+  font-size: 1.5rem;
+  color: #082548;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.image-carousel {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  margin-bottom: 1rem;
+}
+
+.carousel-image-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease, transform 0.3s ease;
+  z-index: 10;
+  color: #082548;
+}
+
+.carousel-btn:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.prev {
+  left: 10px;
+}
+
+.carousel-btn.next {
+  right: 10px;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.dot.active {
+  background: #667eea;
+  transform: scale(1.3);
+}
+
+.dot:hover {
+  background: #764ba2;
+}
+
 /* Section 4: Highlights */
 .highlights-section {
   min-height: 70vh;
@@ -368,7 +598,7 @@ const downloadTicket = () => {
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  background: white;
+  background: #f9f9f9;
 }
 
 .highlights-container {
@@ -491,94 +721,13 @@ section.visible .fade-in {
   .detail-cards {
     grid-template-columns: 1fr;
   }
-}
 
-/* Section 1: Hero */
-.hero-section {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #0073ae 0%, #8de8fe 100%);
-  color: white;
-  position: relative;
-}
-
-.hero-content {
-  text-align: center;
-  width: 100%;
-}
-
-/* Contenu initial et final */
-.initial-content,
-.ready-content {
-  animation: fadeInUp 0.8s ease;
-}
-
-.hero-title {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-}
-
-.loading-animation {
-  margin-top: 2rem;
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  margin: 0 auto;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+  .steps-grid {
+    grid-template-columns: 1fr;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Contenu "ready" */
-.scroll-hint {
-  font-size: 1.2rem;
-  margin-top: 1rem;
-  opacity: 0.9;
-}
-
-/* Flèche animée */
-.arrow-down {
-  margin-top: 3rem;
-}
-
-.arrow {
-  font-size: 4rem;
-  display: inline-block;
-  animation: bounceArrow 2s ease infinite;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.arrow:hover {
-  transform: scale(1.2);
-}
-
-@keyframes bounceArrow {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(20px);
+  
+  .image-carousel {
+    height: 250px;
   }
 }
 </style>
