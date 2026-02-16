@@ -84,38 +84,46 @@
     "id": 3,
     "destination": "Faro",
     "departure": "Lyon",
-    "departureDate": "15 Mars 2025",
+    "departureDate": "5 octobre 2026",
     "returnDate": "18 Mars 2025",
-    "duration": "3 jours",
+    "duration": "10 jours",
     "steps": [
       {
         "order": 1,
-        "city": "Zurich",
+        "city": "Barcelona",
         "images": [
-          "https://images.unsplash.com/photo-1565008576549-57569a49162d?w=800",
-          "https://images.unsplash.com/photo-1559564044-76b52e0dc5b3?w=800"
+          "https://images.unsplash.com/photo-1610213989414-acc5773ba2c6?w=800",
+          "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800"
         ]
       },
       {
         "order": 2,
-        "city": "Innsbruck",
+        "city": "Bilbao",
         "images": [
-          "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800",
-          "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
+          "https://images.unsplash.com/photo-1636556590144-7e3189066277?w=800",
+          "https://images.unsplash.com/photo-1601589664243-a975a3d6452f?w=800"
         ]
       },
       {
         "order": 3,
-        "city": "Vienna",
+        "city": "Madrid",
         "images": [
-          "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800",
-          "https://images.unsplash.com/photo-1609856878074-cf31e21ccb4b?w=800"
+          "https://images.unsplash.com/photo-1570135460230-1407222b82a2?w=800",
+          "https://images.unsplash.com/photo-1607705939544-ad860794fa11?w=800"
+        ]
+      },
+      {
+        "order": 4,
+        "city": "Seville",
+        "images": [
+          "https://images.unsplash.com/photo-1559386081-325882507af7?w=800",
+          "https://images.unsplash.com/photo-1542224505-dc4c0cb6e63c?w=800"
         ]
       }
     ],
     "destinationImages": [
-      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800",
-      "https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?w=800"
+      "https://images.unsplash.com/flagged/photo-1583342109019-d2a0a22e282b?w=800",
+      "https://images.unsplash.com/photo-1637944370754-acbc713e6fe1?w=800"
     ],
     "description": "Balade en Europe",
     "highlights": ["Les Alpes", "Florence", "Slovénie"]

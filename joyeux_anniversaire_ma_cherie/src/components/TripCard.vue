@@ -1,35 +1,16 @@
 <template>
-  <div class="trip-card">
-    <img :src="trip.image" :alt="trip.destination" class="trip-image" />
+  <div class="trip-card" @click="selectTrip">
+    <div class="image-container">
+      <img 
+        :src="trip.destinationImages?.[0] || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800'" 
+        :alt="trip.destination" 
+        class="trip-image" 
+      />
+    </div>
     
-    <div class="trip-content">
-      <h2 class="destination">{{ trip.destination }}</h2>
-      <p class="description">{{ trip.description }}</p>
-      
-      <div class="trip-details">
-        <div class="detail">
-          <span class="label">Départ :</span>
-          <span>{{ trip.departure }}</span>
-        </div>
-        <div class="detail">
-          <span class="label">Dates :</span>
-          <span>{{ trip.departureDate }} - {{ trip.returnDate }}</span>
-        </div>
-        <div class="detail">
-          <span class="label">Durée :</span>
-          <span>{{ trip.duration }}</span>
-        </div>
-      </div>
-
-      <div class="highlights">
-        <span v-for="highlight in trip.highlights" :key="highlight" class="highlight-tag">
-          {{ highlight }}
-        </span>
-      </div>
-
-      <button @click="selectTrip" class="select-button">
-        Choisir ce voyage
-      </button>
+    <div class="trip-info">
+      <h3 class="destination">{{ trip.destination }}</h3>
+      <p class="region">{{ trip.description }}</p>
     </div>
   </div>
 </template>
@@ -37,7 +18,12 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 
-// Définition du type Trip
+interface TripStep {
+  order: number
+  city: string
+  images: string[]
+}
+
 interface Trip {
   id: number
   destination: string
@@ -45,20 +31,18 @@ interface Trip {
   departureDate: string
   returnDate: string
   duration: string
-  image: string
+  destinationImages: string[]
   description: string
   highlights: string[]
+  steps: TripStep[]
 }
 
-// Props
 const props = defineProps<{
   trip: Trip
 }>()
 
-// Router pour navigation
 const router = useRouter()
 
-// Fonction pour sélectionner un voyage
 const selectTrip = () => {
   router.push(`/trip/${props.trip.id}`)
 }
@@ -67,86 +51,49 @@ const selectTrip = () => {
 <style scoped>
 .trip-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .trip-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.image-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
 }
 
 .trip-image {
   width: 100%;
-  height: 250px;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-.trip-content {
+.trip-card:hover .trip-image {
+  transform: scale(1.05);
+}
+
+.trip-info {
   padding: 1.5rem;
 }
 
 .destination {
-  font-size: 1.8rem;
-  color: #082548;
+  font-size: 1.3rem;
+  color: #2c2c2c;
+  font-weight: 600;
   margin: 0 0 0.5rem 0;
-  font-weight: 600;
 }
 
-.description {
+.region {
+  font-size: 0.9rem;
   color: #666;
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
-}
-
-.trip-details {
-  margin-bottom: 1.5rem;
-}
-
-.detail {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.label {
-  font-weight: 600;
-  color: #082548;
-}
-
-.highlights {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.highlight-tag {
-  background: #e8f4f8;
-  color: #0088ce;
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.select-button {
-  width: 100%;
-  background: #cd0067;
-  color: white;
-  border: none;
-  padding: 1rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.select-button:hover {
-  background: #a50053;
+  margin: 0;
 }
 </style>

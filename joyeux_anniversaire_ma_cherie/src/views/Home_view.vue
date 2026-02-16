@@ -1,27 +1,38 @@
-<!-- Dans TripCard.vue -->
 <template>
-  <div class="trip-card" @click="selectTrip">
-    <div class="image-container">
-      <!-- 👇 Changé ici -->
-      <img :src="trip.destinationImages[0]" :alt="trip.destination" class="trip-image" />
-    </div>
-    
-    <div class="trip-info">
-      <h3 class="destination">{{ trip.destination }}</h3>
-      <p class="region">{{ trip.description }}</p>
+  <div class="home">
+    <header class="header">
+      <h1 class="header-title">Réserve ton voyage de rêve dès maintenant</h1>
+      <p class="subtitle">Choisis la destination où tu veux aller ! </p>
+    </header>
+    <!-- Section destinations -->
+    <div class="destinations-section">
+      <h2 class="section-title">Toutes les destinations proposées pour votre cadeau</h2>
+      
+      <!-- Grid des cartes -->
+      <div class="trips-grid">
+        <TripCard 
+          v-for="trip in trips" 
+          :key="trip.id" 
+          :trip="trip" 
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import TripCard from '../components/TripCard.vue'
+import tripsData from '../data/trips.json'
 
+// Interface pour les étapes
 interface TripStep {
   order: number
   city: string
   images: string[]
 }
 
+// Type pour un voyage - MISE À JOUR
 interface Trip {
   id: number
   destination: string
@@ -29,24 +40,16 @@ interface Trip {
   departureDate: string
   returnDate: string
   duration: string
-  destinationImages: string[]  // 👈 Changé
+  destinationImages: string[]  // 👈 Changé de "image" à "destinationImages"
   description: string
   highlights: string[]
   steps: TripStep[]  // 👈 Ajouté
 }
 
-const props = defineProps<{
-  trip: Trip
-}>()
-
-const router = useRouter()
-
-const selectTrip = () => {
-  router.push(`/trip/${props.trip.id}`)
-}
+// Import des voyages depuis le JSON
+const trips = ref<Trip[]>(tripsData.trips)
 </script>
 
-<!-- Le reste du style reste pareil -->
 <style scoped>
 .home {
   min-height: 100vh;
@@ -89,40 +92,6 @@ const selectTrip = () => {
   margin-bottom: 2rem;
 }
 
-.tabs {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 3rem;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.tab {
-  background: none;
-  border: none;
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  color: #666;
-  cursor: pointer;
-  position: relative;
-  transition: color 0.3s;
-}
-
-.tab.active {
-  color: #0088ce;
-  font-weight: 600;
-}
-
-.tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: #0088ce;
-}
-
 /* Grid 4 colonnes */
 .trips-grid {
   display: grid;
@@ -141,7 +110,7 @@ const selectTrip = () => {
     grid-template-columns: 1fr;
   }
   
-  .sncf-header {
+  .header {
     padding: 2rem 1rem;
   }
   
