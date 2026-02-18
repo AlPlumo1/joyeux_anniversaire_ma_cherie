@@ -71,54 +71,65 @@
       </div>
     </section>
 
-    <!-- Section 3.5: Étapes du voyage -->
+    <!-- Section 3.5: Étapes du voyage - Style Poker -->
     <section class="steps-section" ref="stepsSection" v-if="trip?.steps && trip.steps.length > 0">
       <div class="steps-container fade-in">
         <h3 class="section-title">Votre itinéraire</h3>
         
-        <div class="steps-grid">
+        <div class="poker-hand">
           <div 
-            v-for="step in trip.steps" 
+            v-for="(step, index) in trip.steps" 
             :key="step.order"
-            class="step-column"
+            class="poker-card"
+            :style="getCardStyle(index, trip.steps.length)"
+            @mouseenter="hoveredCard = step.order"
+            @mouseleave="hoveredCard = null"
           >
-            <h4 class="step-city">{{ step.city }}</h4>
-            
-            <div class="image-carousel">
-              <button 
-                class="carousel-btn prev" 
-                @click="prevImage(step.order, step.images.length)"
-                v-if="step.images.length > 1"
-              >
-                ‹
-              </button>
-              
-              <div class="carousel-image-container">
-                <img 
-                  :src="step.images[currentImageIndexes[step.order] || 0]" 
-                  :alt="step.city"
-                  class="carousel-image"
-                />
-              </div>
-              
-              <button 
-                class="carousel-btn next" 
-                @click="nextImage(step.order, step.images.length)"
-                v-if="step.images.length > 1"
-              >
-                ›
-              </button>
+            <!-- Face avant (toujours visible) -->
+            <div class="card-front">
+              <h4 class="step-city-mini">{{ step.city }}</h4>
             </div>
             
-            <!-- Indicateurs de pagination -->
-            <div class="carousel-dots" v-if="step.images.length > 1">
-              <span 
-                v-for="(img, index) in step.images" 
-                :key="index"
-                class="dot"
-                :class="{ active: (currentImageIndexes[step.order] || 0) === index }"
-                @click="currentImageIndexes[step.order] = index"
-              ></span>
+            <!-- Contenu détaillé (visible au hover) -->
+            <div class="card-details" v-if="hoveredCard === step.order">
+              <h4 class="step-city-full">{{ step.city }}</h4>
+              
+              <div class="image-carousel">
+                <button 
+                  class="carousel-btn prev" 
+                  @click.stop="prevImage(step.order, step.images.length)"
+                  v-if="step.images.length > 1"
+                >
+                  ‹
+                </button>
+                
+                <div class="carousel-image-container">
+                  <img 
+                    :src="step.images[currentImageIndexes[step.order] || 0]" 
+                    :alt="step.city"
+                    class="carousel-image"
+                  />
+                </div>
+                
+                <button 
+                  class="carousel-btn next" 
+                  @click.stop="nextImage(step.order, step.images.length)"
+                  v-if="step.images.length > 1"
+                >
+                  ›
+                </button>
+              </div>
+              
+              <!-- Indicateurs de pagination -->
+              <div class="carousel-dots" v-if="step.images.length > 1">
+                <span 
+                  v-for="(img, imgIndex) in step.images" 
+                  :key="imgIndex"
+                  class="dot"
+                  :class="{ active: (currentImageIndexes[step.order] || 0) === imgIndex }"
+                  @click.stop="currentImageIndexes[step.order] = imgIndex"
+                ></span>
+              </div>
             </div>
           </div>
         </div>
@@ -161,7 +172,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import tripsData from '../data/trips.json'
 
@@ -219,6 +230,28 @@ const prevImage = (stepOrder: number, maxImages: number) => {
   currentImageIndexes.value[stepOrder] = (current - 1 + maxImages) % maxImages
 }
 
+const hoveredCard = ref<number | null>(null)
+
+// Fonction pour calculer la position de chaque carte
+const getCardStyle = (index: number, total: number) => {
+  const isHovered = hoveredCard.value === (index + 1)
+  
+  if (isHovered) {
+    return {
+      transform: 'translateY(-100px) scale(1.2) rotate(0deg)',
+      zIndex: 100
+    }
+  }
+  
+  const centerIndex = (total - 1) / 2
+  const offset = index - centerIndex
+  
+  return {
+    transform: `translateX(${offset * 80}px) rotate(${offset * 5}deg)`,
+    zIndex: index
+  }
+}
+
 // Intersection Observer pour animations
 const setupScrollAnimations = () => {
   const options = {
@@ -258,6 +291,10 @@ onMounted(() => {
   const tripId = parseInt(route.params.id as string)
   trip.value = tripsData.trips.find(t => t.id === tripId) || null
 
+  console.log('Trip loaded:', trip.value)
+  console.log('Steps:', trip.value?.steps)
+  console.log('Steps length:', trip.value?.steps?.length)
+
   // Initialiser les index d'images pour chaque étape
   if (trip.value?.steps) {
     trip.value.steps.forEach(step => {
@@ -265,7 +302,9 @@ onMounted(() => {
     })
   }
 
-  setupScrollAnimations()
+  nextTick(() => {
+    setupScrollAnimations()
+  })
   
   // Timer de 5 secondes
   setTimeout(() => {
@@ -476,53 +515,113 @@ onMounted(() => {
   color: #666;
 }
 
-/* Section 3.5: Étapes du voyage */
+/* Section 3.5: Étapes du voyage - Style Poker */
 .steps-section {
-  min-height: 80vh;
+  min-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
-  background: white;
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
 
 .steps-container {
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
 }
 
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+.section-title {
+  color: white;
 }
 
-.step-column {
-  background: #f9f9f9;
-  border-radius: 12px;
+.poker-hand {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+  height: 500px;
+  margin-top: 4rem;
+}
+
+.poker-card {
+  position: absolute;
+  width: 280px;
+  height: 400px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.poker-card:hover {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.card-front {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+}
+
+.step-city-mini {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  transform: rotate(-5deg);
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.card-details {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  animation: revealCard 0.3s ease;
 }
 
-.step-city {
-  font-size: 1.5rem;
+@keyframes revealCard {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.step-city-full {
+  font-size: 1.8rem;
   color: #082548;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin: 0 0 1rem 0;
   font-weight: 600;
 }
 
 .image-carousel {
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 250px;
   margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
 .carousel-image-container {
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -530,65 +629,80 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
 }
 
 .carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
   z-index: 10;
   color: #082548;
 }
 
 .carousel-btn:hover {
   background: white;
-  transform: translateY(-50%) scale(1.1);
+  transform: translateY(-50%) scale(1.15);
 }
 
 .carousel-btn.prev {
-  left: 10px;
+  left: 8px;
 }
 
 .carousel-btn.next {
-  right: 10px;
+  right: 8px;
 }
 
 .carousel-dots {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.4rem;
+  margin-top: auto;
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #ccc;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .dot.active {
   background: #667eea;
-  transform: scale(1.3);
+  transform: scale(1.4);
 }
 
 .dot:hover {
   background: #764ba2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .poker-hand {
+    height: 450px;
+  }
+  
+  .poker-card {
+    width: 240px;
+    height: 340px;
+  }
+  
+  .image-carousel {
+    height: 200px;
+  }
 }
 
 /* Section 4: Highlights */
