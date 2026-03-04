@@ -71,67 +71,81 @@
       </div>
     </section>
 
-    <!-- Section 3.5: Étapes du voyage - Style Poker -->
-    <section class="steps-section" ref="stepsSection" v-if="trip?.steps && trip.steps.length > 0">
-      <div class="steps-container fade-in">
+    <!-- Section 3.5: Itinéraire de voyage -->
+    <section class="journey-section" ref="stepsSection" v-if="trip?.steps && trip.steps.length > 0">
+      <div class="journey-container fade-in">
         <h3 class="section-title">Votre itinéraire</h3>
         
-        <div class="poker-hand">
+        <div class="journey-map">
+          <!-- Ligne serpentée SVG -->
+          <svg class="journey-path" viewBox="120 0 800 500" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#667eea" />
+              </marker>
+            </defs>
+            
+            <!-- Chemin principal -->
+            <path 
+              d="M 100,100 Q 300,50 400,150 T 600,250 T 800,350 T 970,460"
+              stroke="#667eea" 
+              stroke-width="4" 
+              fill="none"
+              stroke-dasharray="10,10"
+              marker-end="url(#arrowhead)"
+            />
+          </svg>
+          
+          <!-- Cartes des étapes directement affichées -->
           <div 
             v-for="(step, index) in trip.steps" 
             :key="step.order"
-            class="poker-card"
-            :style="getCardStyle(index, trip.steps.length)"
-            @mouseenter="hoveredCard = step.order"
-            @mouseleave="hoveredCard = null"
+            class="step-card-inline"
+            :style="getWaypointPosition(index)"
           >
-            <!-- Face avant (toujours visible) -->
-            <div class="card-front">
-              <h4 class="step-city-mini">{{ step.city }}</h4>
+            <h4 class="inline-card-title">{{ step.city }}</h4>
+            
+            <div class="image-carousel">
+              <button 
+                class="carousel-btn prev" 
+                @click.stop="prevImage(step.order, step.images.length)"
+                v-if="step.images.length > 1"
+              >
+                ‹
+              </button>
+              
+              <div class="carousel-image-container">
+                <img 
+                  :src="step.images[currentImageIndexes[step.order] || 0]" 
+                  :alt="step.city"
+                  class="carousel-image"
+                />
+              </div>
+              
+              <button 
+                class="carousel-btn next" 
+                @click.stop="nextImage(step.order, step.images.length)"
+                v-if="step.images.length > 1"
+              >
+                ›
+              </button>
             </div>
             
-            <!-- Contenu détaillé (visible au hover) -->
-            <div class="card-details" v-if="hoveredCard === step.order">
-              <h4 class="step-city-full">{{ step.city }}</h4>
-              
-              <div class="image-carousel">
-                <button 
-                  class="carousel-btn prev" 
-                  @click.stop="prevImage(step.order, step.images.length)"
-                  v-if="step.images.length > 1"
-                >
-                  ‹
-                </button>
-                
-                <div class="carousel-image-container">
-                  <img 
-                    :src="step.images[currentImageIndexes[step.order] || 0]" 
-                    :alt="step.city"
-                    class="carousel-image"
-                  />
-                </div>
-                
-                <button 
-                  class="carousel-btn next" 
-                  @click.stop="nextImage(step.order, step.images.length)"
-                  v-if="step.images.length > 1"
-                >
-                  ›
-                </button>
-              </div>
-              
-              <!-- Indicateurs de pagination -->
-              <div class="carousel-dots" v-if="step.images.length > 1">
-                <span 
-                  v-for="(img, imgIndex) in step.images" 
-                  :key="imgIndex"
-                  class="dot"
-                  :class="{ active: (currentImageIndexes[step.order] || 0) === imgIndex }"
-                  @click.stop="currentImageIndexes[step.order] = imgIndex"
-                ></span>
-              </div>
+            <!-- Indicateurs de pagination -->
+            <div class="carousel-dots" v-if="step.images.length > 1">
+              <span 
+                v-for="(img, imgIndex) in step.images" 
+                :key="imgIndex"
+                class="dot"
+                :class="{ active: (currentImageIndexes[step.order] || 0) === imgIndex }"
+                @click.stop="currentImageIndexes[step.order] = imgIndex"
+              ></span>
             </div>
+            
+            <!-- Numéro de l'étape -->
+            <div class="step-number">{{ index + 1 }}</div>
           </div>
+          
         </div>
       </div>
     </section>
@@ -230,27 +244,20 @@ const prevImage = (stepOrder: number, maxImages: number) => {
   currentImageIndexes.value[stepOrder] = (current - 1 + maxImages) % maxImages
 }
 
-const hoveredCard = ref<number | null>(null)
 
-// Fonction pour calculer la position de chaque carte
-const getCardStyle = (index: number, total: number) => {
-  const isHovered = hoveredCard.value === (index + 1)
+// Position des waypoints sur le parcours
+const getWaypointPosition = (index: number) => {
+  // Positions ajustées pour suivre la ligne
+  const positions = [
+    { left: '10%', top: '8%' },     // Barcelona
+    { left: '35%', top: '3%' },     // Bilbao
+    { left: '55%', top: '20%' },    // Madrid
+    { left: '81%', top: '52%' }     // Seville
+  ]
   
-  if (isHovered) {
-    return {
-      transform: 'translateY(-100px) scale(1.2) rotate(0deg)',
-      zIndex: 100
-    }
-  }
-  
-  const centerIndex = (total - 1) / 2
-  const offset = index - centerIndex
-  
-  return {
-    transform: `translateX(${offset * 80}px) rotate(${offset * 5}deg)`,
-    zIndex: index
-  }
+  return positions[index] || positions[0]
 }
+
 
 // Intersection Observer pour animations
 const setupScrollAnimations = () => {
@@ -515,114 +522,199 @@ onMounted(() => {
   color: #666;
 }
 
-/* Section 3.5: Étapes du voyage - Style Poker */
-.steps-section {
+/* Section 3.5: Itinéraire de voyage */
+.journey-section {
   min-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 6rem 2rem;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-.steps-container {
-  max-width: 1400px;
+.journey-container {
+  max-width: 1800px;
   width: 100%;
 }
 
-.section-title {
-  color: white;
-}
-
-.poker-hand {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
+.journey-map {
   position: relative;
-  height: 500px;
-  margin-top: 4rem;
-}
-
-.poker-card {
-  position: absolute;
-  width: 280px;
-  height: 400px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  overflow: hidden;
-}
-
-.poker-card:hover {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-}
-
-.card-front {
   width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  height: 600px;
+  margin-top: 4rem;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow: visible;
   padding: 2rem;
 }
 
-.step-city-mini {
-  font-size: 2rem;
-  font-weight: 700;
-  text-align: center;
-  transform: rotate(-5deg);
-  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.card-details {
+.journey-path {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Cartes inline */
+.step-card-inline {
+  position: absolute;
+  width: 240px;
   background: white;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  animation: revealCard 0.3s ease;
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-@keyframes revealCard {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.step-card-inline:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
-.step-city-full {
-  font-size: 1.8rem;
+.inline-card-title {
+  font-size: 1.3rem;
   color: #082548;
+  margin: 0 0 0.8rem 0;
+  font-weight: 700;
   text-align: center;
-  margin: 0 0 1rem 0;
-  font-weight: 600;
+}
+
+.step-number {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 3px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .image-carousel {
   position: relative;
   width: 100%;
-  height: 250px;
-  margin-bottom: 1rem;
-  flex-shrink: 0;
+  height: 160px;
+  margin-bottom: 0.8rem;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .carousel-image-container {
   width: 100%;
   height: 100%;
-  border-radius: 12px;
-  overflow: hidden;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  color: #082548;
+  transition: all 0.3s ease;
+}
+
+.carousel-btn:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.15);
+}
+
+.carousel-btn.prev {
+  left: 6px;
+}
+
+.carousel-btn.next {
+  right: 6px;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background: #667eea;
+  transform: scale(1.4);
+}
+
+.dot:hover {
+  background: #764ba2;
+}
+
+/* Icônes départ/arrivée */
+.journey-icon {
+  position: absolute;
+  font-size: 2rem;
+  z-index: 5;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .journey-map {
+    height: 800px;
+  }
+  
+  .step-card-inline {
+    width: 200px;
+  }
+  
+  .image-carousel {
+    height: 140px;
+  }
+}
+
+.carousel-image-container {
+  width: 100%;
+  height: 100%;
 }
 
 .carousel-image {
@@ -645,15 +737,15 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   z-index: 10;
   color: #082548;
+  transition: all 0.3s ease;
 }
 
 .carousel-btn:hover {
   background: white;
-  transform: translateY(-50%) scale(1.15);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .carousel-btn.prev {
@@ -668,7 +760,6 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   gap: 0.4rem;
-  margin-top: auto;
 }
 
 .dot {
@@ -689,19 +780,32 @@ onMounted(() => {
   background: #764ba2;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .poker-hand {
-    height: 450px;
+/* Animation de la carte */
+.card-pop-enter-active,
+.card-pop-leave-active {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-pop-enter-from,
+.card-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+}
+
+/* Icônes départ/arrivée */
+.journey-icon {
+  position: absolute;
+  font-size: 2.5rem;
+  z-index: 5;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
   }
-  
-  .poker-card {
-    width: 240px;
-    height: 340px;
-  }
-  
-  .image-carousel {
-    height: 200px;
+  50% {
+    transform: translateY(-10px);
   }
 }
 
