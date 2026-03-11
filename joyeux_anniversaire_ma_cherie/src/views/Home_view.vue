@@ -6,7 +6,6 @@
     </header>
     <!-- Section destinations -->
     <div class="destinations-section">
-      <h2 class="section-title">Toutes les destinations proposées pour votre cadeau</h2>
       
       <!-- Grid des cartes -->
       <div class="trips-grid">
@@ -40,10 +39,10 @@ interface Trip {
   departureDate: string
   returnDate: string
   duration: string
-  destinationImages: string[]  // 👈 Changé de "image" à "destinationImages"
+  destinationImages: string[] 
   description: string
   highlights: string[]
-  steps: TripStep[]  // 👈 Ajouté
+  steps: TripStep[] 
 }
 
 // Import des voyages depuis le JSON
