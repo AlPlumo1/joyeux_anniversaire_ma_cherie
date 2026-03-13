@@ -290,7 +290,7 @@ const setupScrollAnimations = () => {
 
 // Fonction pour télécharger le billet
 const downloadTicket = () => {
-  alert('Téléchargement du billet... (à venir !)')
+  window.open('/joyeux_anniversaire.pdf', '_blank')
 }
 
 // Au montage du composant

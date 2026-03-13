@@ -4,8 +4,8 @@
     "id": 1,
     "destination": "Lubjana",
     "departure": "Lyon",
-    "departureDate": "Quand tu voudras",
-    "returnDate": "Quelques jours après",
+    "departureDate": "aller : Quand tu voudras",
+    "returnDate": "retour : Quelques jours après",
     "duration": "10 jours",
     "steps": [
       {
@@ -44,8 +44,8 @@
     "id": 2,
     "destination": "Copenhague",
     "departure": "Lyon",
-    "departureDate": "Avant l'hiver",
-    "returnDate": "Peut-être jamais",
+    "departureDate": "aller : Avant l'hiver",
+    "returnDate": "retour : Peut-être jamais",
     "duration": "à voir",
     "steps": [
       {
@@ -83,9 +83,9 @@
   {
     "id": 3,
     "destination": "Faro",
-    "departure": "Lyon",
-    "departureDate": "à déterminer",
-    "returnDate": "à déterminer",
+    "departure": "Valence",
+    "departureDate": "aller : à déterminer",
+    "returnDate": "retour : qui sait ?",
     "duration": "10 jours",
     "steps": [
       {
@@ -114,7 +114,7 @@
       },
       {
         "order": 4,
-        "city": "Seville",
+        "city": "Sevilla",
         "images": [
           "https://images.unsplash.com/photo-1559386081-325882507af7?w=800",
           "https://images.unsplash.com/photo-1542224505-dc4c0cb6e63c?w=800"
@@ -132,8 +132,8 @@
     "id": 4,
     "destination": "Bari",
     "departure": "Lyon",
-    "departureDate": "un jour",
-    "returnDate": "un autre jour",
+    "departureDate": "aller : un jour",
+    "returnDate": "retour : un autre jour",
     "duration": "le temps qu'il faut",
     "steps": [
       {
@@ -174,7 +174,7 @@
       "https://images.unsplash.com/photo-1630324388631-421e708e0926?w=800"
     ],
     "description": "Italia de I à A",
-    "highlights": ["Gastronomie", "Culture", "Firenze"]
+    "highlights": ["Pizza", "Mozza", "Pasta"]
   }
   ]
 }
